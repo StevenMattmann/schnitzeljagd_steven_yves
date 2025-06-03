@@ -18,7 +18,7 @@ export const routes: Routes = [
       {
         path: 'leaderboard',
         loadComponent: () =>
-          import('../leaderboard/leaderboard').then((m) => m.Leaderboard),
+          import('../../leaderboard/leaderboard').then((m) => m.Leaderboard),
       },
       {
         path: '',
