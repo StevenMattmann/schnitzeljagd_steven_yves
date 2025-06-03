@@ -6,8 +6,8 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-tasks',
-  templateUrl: 'tasks.html',
-  styleUrls: ['tasks.scss'],
+  templateUrl: 'tasks.page.html',
+  styleUrls: ['tasks.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, RouterModule]
 })
@@ -15,7 +15,7 @@ export class TasksPage {
   tasks = [
     { label: '1. Task', route: '/task1', unlocked: true, completed: true },
     { label: '2. Task', route: '/task2', unlocked: true, completed: false },
-    { label: '3. Task', route: '/task3', unlocked: false, completed: false },
+    { label: '3. Task', route: '/task3', unlocked: true, completed: false },
     { label: '4. Task', route: '/task4', unlocked: false, completed: false }
   ];
 
