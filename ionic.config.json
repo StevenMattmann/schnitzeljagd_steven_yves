@@ -1,0 +1,7 @@
+{
+  "name": "schnitzeljagd_steven_yves",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
