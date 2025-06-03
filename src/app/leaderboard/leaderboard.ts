@@ -3,11 +3,12 @@ import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/stan
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss'],
+  selector: 'app-leaderboard',
+  templateUrl: 'leaderboard.html',
+  styleUrls: ['leaderboard.scss'],
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, ExploreContainerComponent],
+  standalone: true
 })
-export class Tab3Page {
+export class Leaderboard {
   constructor() {}
 }
