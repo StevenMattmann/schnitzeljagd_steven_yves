@@ -1,0 +1,28 @@
+<ion-content class="ion-padding">
+  <h1 class="ion-text-center">Schnitzeljagd-<br>Game by Yves & Steven</h1>
+
+  <ng-container *ngIf="!showPrivacyDialog">
+    <div class="ion-text-center">
+      <ng-container *ngIf="!showUsernameDialog && !username">
+        <ion-button expand="block" (click)="showUsernameDialog = true">Start game</ion-button>
+      </ng-container>
+    </div>
+
+    <div class="ion-text-center" *ngIf="username && !permissionsApproved">
+      <h2>Hi {{ username }}, tap ‘Start game’ to begin!</h2>
+      <ion-button expand="block" (click)="showPrivacyDialog = true">Start game</ion-button>
+    </div>
+  </ng-container>
+
+  <app-username-dialog
+    *ngIf="showUsernameDialog"
+    (usernameSubmit)="onUsernameSubmit($event)"
+    (dialogCancel)="showUsernameDialog = false"
+  ></app-username-dialog>
+
+  <app-privacy-dialog
+    *ngIf="showPrivacyDialog"
+    (permissionsApproved)="onPermissionsApproved()"
+    (cancelDialog)="showPrivacyDialog = false"
+  ></app-privacy-dialog>
+</ion-content>
