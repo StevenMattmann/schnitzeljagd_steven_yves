@@ -3,34 +3,19 @@ import { TabsPage } from './tabs.page';
 
 export const routes: Routes = [
   {
-    path: 'tabs',
+    path: '',
     component: TabsPage,
     children: [
       {
         path: 'tasks',
         loadComponent: () =>
-          import('../tasks/./tasks').then((m) => m.Tasks),
-      },
-      {
-        path: 'Login',
-        loadComponent: () =>
-          import('../login/login').then((m) => m.Login),
-      },
-      {
-        path: 'leaderboard',
-        loadComponent: () =>
-          import('../leaderboard/leaderboard').then((m) => m.Leaderboard),
+          import('../pages/tasks/tasks.page').then((m) => m.TasksPage),
       },
       {
         path: '',
-        redirectTo: '/tabs/tasks',
+        redirectTo: 'tasks',
         pathMatch: 'full',
       },
     ],
-  },
-  {
-    path: '',
-    redirectTo: '/tabs/tasks',
-    pathMatch: 'full',
   },
 ];
