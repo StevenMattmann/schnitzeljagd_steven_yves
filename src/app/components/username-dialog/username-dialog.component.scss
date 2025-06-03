@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+ion-card {
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+ion-input {
+  margin-bottom: 1rem;
+  --border-radius: 8px;
+  --padding-start: 12px;
+  --background: #f3f4f6;
+}
+
+ion-button {
+  --background: #6366f1;
+  --border-radius: 12px;
+  width: 100%;
+  margin-top: auto;
+  font-size: 1.1rem;
+  text-transform: none;
+}
+
+ion-button[fill="outline"] {
+  --border-radius: 12px;
+  --border-color: #6b7280; // grau
+  --color: #6b7280;
+  margin-top: 0.75rem;
+  font-size: 1rem;
+}
+
