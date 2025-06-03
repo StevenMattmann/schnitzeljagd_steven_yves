@@ -4,6 +4,30 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <h2>Task-Seite funktioniert 🎉</h2>
+<ion-content>
+  <ion-list>
+    <ion-item
+      *ngFor="let task of tasks"
+      [routerLink]="task.route"
+      [disabled]="!task.unlocked"
+      lines="none"
+    >
+      <ion-label
+        [ngClass]="{
+          'completed': task.completed,
+          'unlocked': task.unlocked && !task.completed,
+          'locked': !task.unlocked
+        }"
+      >
+        <h1>{{ task.label }}</h1>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div class="points-bar">
+    <img src="assets/medal.png" alt="Medal" />
+    <span>{{ medals }}x</span>
+    <img src="assets/potato.png" alt="Potato" />
+    <span>{{ potatoes }}x</span>
+  </div>
 </ion-content>

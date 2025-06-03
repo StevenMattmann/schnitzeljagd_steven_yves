@@ -8,8 +8,17 @@ export const routes: Routes = [
     children: [
       {
         path: 'tasks',
+        loadComponent: () => import('../tasks/tasks.page').then(m => m.TasksPage)
+      },
+      {
+        path: 'Login',
         loadComponent: () =>
-          import('../pages/tasks/tasks.page').then((m) => m.TasksPage),
+          import('../login/login').then((m) => m.Login),
+      },
+      {
+        path: 'leaderboard',
+        loadComponent: () =>
+          import('../../leaderboard/leaderboard').then((m) => m.Leaderboard),
       },
       {
         path: '',

@@ -1,29 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent
-} from '@ionic/angular/standalone';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-tasks',
   standalone: true,
   templateUrl: './tasks.page.html',
   styleUrls: ['./tasks.page.scss'],
-  imports: [
-    CommonModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent
-  ]
+  imports: [IonicModule, CommonModule, RouterModule]
 })
-export class TasksPage implements OnInit {
-  constructor() {}
+export class TasksPage {
+  tasks = [
+    { label: '1. Task', route: '/task1', unlocked: true, completed: true },
+    { label: '2. Task', route: '/task2', unlocked: true, completed: false },
+    { label: '3. Task', route: '/task3', unlocked: true, completed: false },
+    { label: '4. Task', route: '/task4', unlocked: false, completed: false }
+  ];
 
-  ngOnInit() {
-    console.debug('TasksPage');
-  }
+  medals = 1;
+  potatoes = 0;
 }
