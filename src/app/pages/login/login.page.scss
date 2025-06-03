@@ -1,0 +1,28 @@
+ion-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20vh;
+    margin-bottom: 5vh;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  ion-button {
+    --background: #6366f1;
+    --border-radius: 12px;
+    width: 50%;
+    margin: 0 auto;
+  }
+}

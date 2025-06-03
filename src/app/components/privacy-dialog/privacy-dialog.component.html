@@ -1,0 +1,15 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Privacy info</ion-card-title>
+    <ion-card-subtitle>
+      To start the “Schnitzeljagd” game, we need access to your camera and location.
+    </ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-button expand="block" (click)="requestPermissions()">Approve</ion-button>
+    <ion-button fill="outline" expand="block" color="medium" (click)="cancelDialog.emit()">
+      Cancel
+    </ion-button>
+  </ion-card-content>
+</ion-card>
