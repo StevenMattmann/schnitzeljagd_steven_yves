@@ -30,7 +30,8 @@ export class DistancePage implements OnInit, OnDestroy {
   private startTime: number | null = null;
   private taskCompleted: boolean = false;
 
-  constructor(private router: Router, private trackingService: TrackingService) {}
+  constructor(private router: Router, private trackingService: TrackingService) {
+  }
 
   ngOnInit() {
     this.startTask();
@@ -45,7 +46,7 @@ export class DistancePage implements OnInit, OnDestroy {
     try {
       await Geolocation.requestPermissions(); // Wichtig!
 
-      const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      const position = await Geolocation.getCurrentPosition({enableHighAccuracy: true});
       this.startPosition = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
@@ -53,7 +54,7 @@ export class DistancePage implements OnInit, OnDestroy {
       console.log('Startposition gesetzt:', this.startPosition);
 
       this.watchId = await Geolocation.watchPosition(
-        { enableHighAccuracy: true, timeout: 10000 },
+        {enableHighAccuracy: true, timeout: 10000},
         async (position) => {
           if (position && position.coords && this.startPosition) {
             const currentPos = {
@@ -72,7 +73,7 @@ export class DistancePage implements OnInit, OnDestroy {
 
             if (this.distanceTravelled >= this.requiredDistance && !this.taskCompleted) {
               this.taskCompleted = true;
-              await Haptics.impact({ style: ImpactStyle.Medium });
+              await Haptics.impact({style: ImpactStyle.Medium});
               console.log('Erforderliche Distanz erreicht – haptisches Feedback');
             }
           } else {
@@ -87,7 +88,7 @@ export class DistancePage implements OnInit, OnDestroy {
 
   stopTracking() {
     if (this.watchId) {
-      Geolocation.clearWatch({ id: this.watchId });
+      Geolocation.clearWatch({id: this.watchId});
       this.watchId = null;
     }
   }
