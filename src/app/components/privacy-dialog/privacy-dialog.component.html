@@ -27,6 +27,14 @@
 
     <ion-button
       expand="block"
+      [disabled]="!(geoGranted && cameraGranted)"
+      (click)="completeTask()"
+    >
+      Weiter
+    </ion-button>
+
+    <ion-button
+      expand="block"
       fill="outline"
       color="medium"
       (click)="cancelTask()"
@@ -34,12 +42,5 @@
       Abbrechen
     </ion-button>
 
-    <ion-button
-      expand="block"
-      [disabled]="!(geoGranted && cameraGranted)"
-      (click)="completeTask()"
-    >
-      Weiter
-    </ion-button>
   </ion-card-content>
 </ion-card>
