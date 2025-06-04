@@ -9,6 +9,7 @@
     <ion-item
       *ngFor="let task of tasks"
       [routerLink]="task.route"
+      routerDirection="forward"
       [disabled]="!task.unlocked"
       lines="none"
     >

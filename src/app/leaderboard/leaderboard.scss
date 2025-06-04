@@ -1,0 +1,14 @@
+.header-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ion-color-dark); /* oder z.B. #222 */
+  line-height: 1.2;
+  margin: 0;
+}
+
+.header-card-subtitle {
+  font-size: 14px;
+  color: var(--ion-color-medium); /* oder z.B. #666 */
+  line-height: 1;
+  margin-top: 2px;
+}

@@ -1,19 +1,33 @@
 <ion-header class="leaderboard-header">
-    <ion-card-header class="header-card" routerLink="/tasks">
-      <ion-card-title class="header-card-title">Schnitzeljagd</ion-card-title>
-      <ion-card-subtitle class="header-card-subtitle">Leaderboard</ion-card-subtitle>
-    </ion-card-header>
+  <ion-toolbar>
+
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="'/tasks'" fill="clear">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Back
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      <div>
+        <div class="header-card-title">Schnitzeljagd</div>
+        <div class="header-card-subtitle">Leaderboard</div>
+      </div>
+    </ion-title>
+
+  </ion-toolbar>
 </ion-header>
 
+
 <ion-content class="body-leaderboard-content">
-    <ion-list class="body-leaderboard-list">
-      <ion-item *ngFor="let player of players" class="body-leaderboard-item">
-        <ion-label class="body-leaderboard-label">
-          <h2>{{ player.name }}</h2>
-          <p>{{ player.date }}</p>
-        </ion-label>
-        <ion-badge class="schnitzel-badge" slot="end">{{ player.schnitzel }} Schnitzel</ion-badge>
-        <ion-badge class="kartoffel-badge" slot="end">{{ player.potatoes }} Kartoffeln</ion-badge>
-      </ion-item>
-    </ion-list>
+  <ion-list class="body-leaderboard-list">
+    <ion-item *ngFor="let player of players" class="body-leaderboard-item">
+      <ion-label class="body-leaderboard-label">
+        <h2>{{ player.name }}</h2>
+        <p>{{ player.date }}</p>
+      </ion-label>
+      <ion-badge class="schnitzel-badge" slot="end">{{ player.schnitzel }} Schnitzel</ion-badge>
+      <ion-badge class="kartoffel-badge" slot="end">{{ player.potatoes }} Kartoffeln</ion-badge>
+    </ion-item>
+  </ion-list>
 </ion-content>

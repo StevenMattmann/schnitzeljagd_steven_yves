@@ -12,10 +12,10 @@ import { RouterModule } from '@angular/router';
 })
 export class TasksPage {
   tasks = [
-    { label: '1. Task', route: '/task1', unlocked: true, completed: true },
-    { label: '2. Task', route: '/task2', unlocked: true, completed: false },
-    { label: '3. Task', route: '/task3', unlocked: true, completed: false },
-    { label: '4. Task', route: '/task4', unlocked: false, completed: false }
+    { label: '1. Task: Geolocation', route: '/geolocation', unlocked: true, completed: true },
+    { label: '2. Task: Qr-Code', route: '/qrcode', unlocked: true, completed: false },
+    { label: '3. Task: Power', route: '/power', unlocked: true, completed: false },
+    { label: '4. Task: Distance', route: '/distance', unlocked: true, completed: false }
   ];
 
   medals = 1;
