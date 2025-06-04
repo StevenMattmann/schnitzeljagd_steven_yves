@@ -1,31 +1,19 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Leaderboard
-    </ion-title>
-  </ion-toolbar>
+<ion-header class="leaderboard-header">
+    <ion-card-header class="header-card" routerLink="/tasks">
+      <ion-card-title class="header-card-title">Schnitzeljagd</ion-card-title>
+      <ion-card-subtitle class="header-card-subtitle">Leaderboard</ion-card-subtitle>
+    </ion-card-header>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Leaderboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Top Spieler</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item *ngFor="let player of players">
-          <ion-label>
-            <h2>{{ player.name }}</h2>
-            <p>{{ player.points }} Punkte</p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+<ion-content class="body-leaderboard-content">
+    <ion-list class="body-leaderboard-list">
+      <ion-item *ngFor="let player of players" class="body-leaderboard-item">
+        <ion-label class="body-leaderboard-label">
+          <h2>{{ player.name }}</h2>
+          <p>{{ player.date }}</p>
+        </ion-label>
+        <ion-badge class="schnitzel-badge" slot="end">{{ player.schnitzel }} Schnitzel</ion-badge>
+        <ion-badge class="kartoffel-badge" slot="end">{{ player.potatoes }} Kartoffeln</ion-badge>
+      </ion-item>
+    </ion-list>
 </ion-content>
