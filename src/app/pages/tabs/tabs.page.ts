@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  imports: [IonTabs, IonTabBar, IonTabButton, IonButton, IonLabel],
+  imports: [IonTabs, IonTabBar, IonTabButton, IonButton],
   standalone: true
 })
 export class TabsPage {

@@ -1,8 +1,9 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { BrowserQRCodeReader } from '@zxing/browser';
-import { Router } from '@angular/router';
-import { TrackingService } from '../../services/tracking.service';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {BrowserQRCodeReader} from '@zxing/browser';
+import {Router} from '@angular/router';
+import {TrackingService} from '../../services/tracking.service';
 import {IonicModule} from "@ionic/angular";
+import {Haptics, ImpactStyle} from "@capacitor/haptics";
 
 @Component({
   selector: 'app-qrcode',
@@ -13,7 +14,7 @@ import {IonicModule} from "@ionic/angular";
   ],
   standalone: true
 })
-export class QRCodePage {
+export class QRCodePage implements  OnInit {
   @ViewChild('video') videoElement!: ElementRef<HTMLVideoElement>;
   scannerResult = 'Noch nichts erkannt...';
   private taskCompleted = false;
@@ -21,6 +22,10 @@ export class QRCodePage {
 
   constructor(private router: Router, private trackingService: TrackingService) {}
 
+  ngOnInit() {
+    this.trackingService.markTaskStarted('Qr-Code'); // ❗ exakt gleich schreiben wie im TasksPage-Array
+    this.startTime = Date.now();
+  }
   async startScanner() {
     const codeReader = new BrowserQRCodeReader();
     try {
@@ -29,6 +34,7 @@ export class QRCodePage {
 
       if (this.scannerResult === 'M335@ICT-BZ' && !this.taskCompleted) {
         this.taskCompleted = true;
+        await Haptics.impact({style: ImpactStyle.Medium})
         alert('✔️ Richtiger QR-Code!');
       }
     } catch (err) {
@@ -40,12 +46,18 @@ export class QRCodePage {
   completeTask() {
     if (this.taskCompleted) {
       const duration = Date.now() - this.startTime;
-      this.trackingService.addTask('QRCode', duration);
-      this.router.navigate(['/power']);
+      this.trackingService.addTask('Qr-Code', duration);
+
+      this.trackingService.markTaskCompleted('Qr-Code'); // ✅ hinzufügen
+
+      this.router.navigateByUrl('/tabs/tasks', { replaceUrl: true }); // damit Tasks-Status aktualisiert wird
+    } else {
+      alert('❌ Bitte scanne zuerst den QR-Code.');
     }
   }
 
   skipTask() {
+    this.trackingService.markTaskStarted('Qr-Code');
     this.router.navigate(['/power']);
   }
 

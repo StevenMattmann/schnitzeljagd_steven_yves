@@ -10,6 +10,8 @@ export class TrackingService {
   private lastPosition: { lat: number; lng: number } | null = null;
   private schnitzelCount$ = new BehaviorSubject<number>(0);
   private kartoffelCount$ = new BehaviorSubject<number>(0);
+  private completedTaskNames = new Set<string>();
+  private startedTaskNames = new Set<string>();
 
   private _distance$ = new BehaviorSubject<number>(0);
   public distance$ = this._distance$.asObservable();
@@ -70,7 +72,6 @@ export class TrackingService {
       timestamp: new Date().toISOString()
     };
     this.tasks.push(entry);
-    console.log('📝 Aufgabe gespeichert:', entry);
 
     const schnitzel = 1;
     this.schnitzelCount$.next(this.schnitzelCount$.value + schnitzel);
@@ -79,13 +80,7 @@ export class TrackingService {
       this.kartoffelCount$.next(this.kartoffelCount$.value + 1);
     }
 
-    console.log(
-      `🏁 Punkte: +${schnitzel} 🥇, +${duration > 20000 ? 1 : 0} 🥔 (Zeit: ${duration} ms)`
-    );
-  }
-
-  getCompletedTasks() {
-    return this.tasks;
+    this.completedTaskNames.add(taskName); // ✅ ergänzt
   }
 
   getTotalTaskCount(): number {
@@ -114,4 +109,26 @@ export class TrackingService {
   get kartoffeln$() {
     return this.kartoffelCount$.asObservable();
   }
+
+
+  isTaskCompleted(taskName: string): boolean {
+    return this.completedTaskNames.has(taskName);
+  }
+
+  markTaskCompleted(taskName: string): void {
+    this.completedTaskNames.add(taskName);
+  }
+
+  markTaskStarted(taskName: string): void {
+    this.startedTaskNames.add(taskName);
+  }
+
+  isTaskStarted(taskName: string): boolean {
+    return this.startedTaskNames.has(taskName);
+  }
+
+  getCompletedTaskNames(): string[] {
+    return Array.from(this.completedTaskNames);
+  }
+
 }

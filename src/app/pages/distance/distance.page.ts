@@ -29,6 +29,7 @@ export class DistancePage implements OnInit, OnDestroy {
   ngOnInit() {
     this.startTime = Date.now(); // ⏱️ Startzeit setzen
     this.trackingService.startTracking();
+    this.trackingService.markTaskStarted('Distance');
 
     this.sub = this.trackingService.distance$.subscribe(async (distance) => {
       this.distanceTravelled = distance;
@@ -51,6 +52,8 @@ export class DistancePage implements OnInit, OnDestroy {
       const duration = Date.now() - this.startTime; // ⏱️ Dauer berechnen
       this.trackingService.addTask('Distance', duration); // 📝 Speichern
       this.router.navigate(['/end']);
+
+      this.trackingService.markTaskCompleted('Distance');
     }
   }
 

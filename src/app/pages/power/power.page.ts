@@ -1,19 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {
-  IonButton,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonFooter
-} from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
-import { Device } from '@capacitor/device';
-import { TrackingService } from '../../services/tracking.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonFooter} from '@ionic/angular/standalone';
+import {Router} from '@angular/router';
+import {Device} from '@capacitor/device';
+import {TrackingService} from '../../services/tracking.service';
+import {Haptics, ImpactStyle} from "@capacitor/haptics";
 
 @Component({
   selector: 'app-power',
@@ -46,6 +38,7 @@ export class PowerPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.startTask();
     this.startBatteryMonitoring();
+    this.trackingService.markTaskStarted('Power')
   }
 
   ngOnDestroy() {
@@ -60,6 +53,12 @@ export class PowerPage implements OnInit, OnDestroy {
     try {
       const result = await Device.getBatteryInfo();
       this.isCharging = result.isCharging ?? null;
+      if (this.isCharging) {
+        console.log('Gerät ist am Laden.');
+        await Haptics.impact({ style: ImpactStyle.Medium});
+      } else {
+        console.log('Gerät ist nicht am Laden.');
+      }
     } catch (error) {
       console.error('Abrufen der Batterieinformationen fehlgeschlagen:', error);
       this.isCharging = null;
@@ -92,6 +91,7 @@ export class PowerPage implements OnInit, OnDestroy {
 
       this.stopBatteryMonitoring();
       this.router.navigate(['distance']);
+      this.trackingService.markTaskCompleted('Power');
     } else {
       alert('⚠️ Bitte schliesse dein Gerät an ein Ladekabel an, um fortzufahren.');
     }

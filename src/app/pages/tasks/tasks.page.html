@@ -10,15 +10,16 @@
       *ngFor="let task of tasks"
       [routerLink]="task.route"
       routerDirection="forward"
-      [disabled]="!task.unlocked"
+      [disabled]="!task.unlocked || task.completed"
+      class="unlockedItems"
       lines="none"
     >
       <ion-label
         [ngClass]="{
-          'completed': task.completed,
-          'unlocked': task.unlocked && !task.completed,
-          'locked': !task.unlocked
-        }"
+    'completed': task.completed,
+    'unlocked': task.unlocked && !task.completed,
+    'locked': !task.unlocked && !task.completed
+      }"
       >
         <h1>{{ task.label }}</h1>
       </ion-label>

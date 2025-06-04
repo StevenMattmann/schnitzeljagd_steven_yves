@@ -41,7 +41,7 @@ export class GeolocationPage implements OnInit, OnDestroy {
   public alreadyDone: boolean = false;
 
   private readonly destination = { lat: 47.027596, lng: 8.300954 };
-  private readonly allowedRadius = 5000;
+  private readonly allowedRadius = 1550000000;
 
   constructor(
     private router: Router,
@@ -49,6 +49,7 @@ export class GeolocationPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.tracker.markTaskStarted('Geolocation');
     this.beginTask();
     this.initLocationWatcher();
   }
@@ -132,6 +133,8 @@ export class GeolocationPage implements OnInit, OnDestroy {
     if (this.taskStartedAt) {
       const duration = Date.now() - this.taskStartedAt;
       this.tracker.addTask('Geolocation', duration);
+
+      this.tracker.markTaskCompleted('Geolocation');
     }
 
     this.stopGeoTracking();
