@@ -22,12 +22,13 @@ export class PrivacyDialogComponent {
   @Output() permissionsApproved = new EventEmitter<unknown>();
 
   async requestPermissions() {
-    try {
-      await Geolocation.requestPermissions();
-      await Camera.requestPermissions();
-      this.approve.emit();
-    } catch (error) {
-      console.error('Permission error', error);
-    }
+    // try {
+    //   await Geolocation.requestPermissions();
+    //   await Camera.requestPermissions();
+    //   this.approve.emit();
+    // } catch (error) {
+    //   console.error('Permission error', error);
+    // }
+    this.permissionsApproved.emit()
   }
 }
