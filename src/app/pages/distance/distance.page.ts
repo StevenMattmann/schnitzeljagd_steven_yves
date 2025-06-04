@@ -54,12 +54,14 @@ export class DistancePage implements OnInit, OnDestroy {
       this.router.navigate(['/end']);
 
       this.trackingService.markTaskCompleted('Distance');
+    } else {
     }
   }
 
   skipTask() {
     this.trackingService.stopTracking();
     this.router.navigate(['/end']);
+    this.trackingService.markTaskAsFailed('Distance');
   }
 
   cancelTask() {

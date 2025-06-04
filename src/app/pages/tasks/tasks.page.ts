@@ -41,6 +41,7 @@ export class TasksPage implements OnInit, ViewWillEnter {
 
   ngOnInit() {
     this.updateTaskStates();
+    this.trackingService.startOverallTimer()
   }
 
   ionViewWillEnter() {

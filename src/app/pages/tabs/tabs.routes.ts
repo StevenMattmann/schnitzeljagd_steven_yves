@@ -16,6 +16,11 @@ export const routes: Routes = [
           import('../../leaderboard/leaderboard').then((m) => m.Leaderboard),
       },
       {
+        path: 'end',
+        loadComponent: () =>
+          import('../end-leaderboard/end-leaderboard.component').then((m) => m.EndLeaderboardComponent),
+      },
+      {
         path: '',
         redirectTo: 'tasks',
         pathMatch: 'full',

@@ -127,6 +127,7 @@ export class GeolocationPage implements OnInit, OnDestroy {
   onSkip(): void {
     this.stopGeoTracking();
     this.router.navigate(['qrcode']);
+    this.tracker.markTaskAsFailed('Geolocation');
   }
 
   onFinish(): void {

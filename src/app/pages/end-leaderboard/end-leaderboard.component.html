@@ -1,0 +1,15 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>🎉 Schnitzeljagd beendet!</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <p>⏱️ Dauer: {{ elapsedTime }}</p>
+    <p>🥨 Gesammelte Schnitzel: {{ totalSchnitzel | async }}</p>
+    <p>🥔 Gesammelte Kartoffeln: {{ totalKartoffeln | async }}</p>
+  </ion-card-content>
+</ion-card>
+
+<ion-footer>
+  <ion-button expand="full" (click)="goToLeaderboard()">Zum Leaderboard</ion-button>
+  <ion-button href="" expand="full" color="danger">Start new Game</ion-button>
+</ion-footer>

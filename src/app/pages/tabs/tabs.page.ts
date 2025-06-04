@@ -1,5 +1,5 @@
 import { Component, EnvironmentInjector, inject } from '@angular/core';
-import {IonTabs, IonTabBar, IonTabButton, IonButton, IonLabel} from '@ionic/angular/standalone';
+import {IonTabs, IonTabBar, IonTabButton, IonButton} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { triangle, ellipse, square } from 'ionicons/icons';
 import {AlertController} from "@ionic/angular";
@@ -31,7 +31,7 @@ export class TabsPage {
         {
           text: 'Ja, aufgeben',
           handler: () => {
-            this.router.navigateByUrl('/');
+            this.router.navigateByUrl('/end');
           },
         },
       ],

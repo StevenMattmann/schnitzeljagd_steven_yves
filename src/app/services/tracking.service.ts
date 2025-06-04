@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { BehaviorSubject } from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,8 @@ export class TrackingService {
   private kartoffelCount$ = new BehaviorSubject<number>(0);
   private completedTaskNames = new Set<string>();
   private startedTaskNames = new Set<string>();
+  private startTime: number | null = null;
+
 
   private _distance$ = new BehaviorSubject<number>(0);
   public distance$ = this._distance$.asObservable();
@@ -58,7 +60,7 @@ export class TrackingService {
 
   stopTracking() {
     if (this.watchId) {
-      Geolocation.clearWatch({ id: this.watchId });
+      Geolocation.clearWatch({id: this.watchId});
       this.watchId = null;
       this.lastPosition = null;
       this._distance$.next(0);
@@ -80,11 +82,7 @@ export class TrackingService {
       this.kartoffelCount$.next(this.kartoffelCount$.value + 1);
     }
 
-    this.completedTaskNames.add(taskName); // ✅ ergänzt
-  }
-
-  getTotalTaskCount(): number {
-    return this.tasks.length;
+    this.completedTaskNames.add(taskName);
   }
 
   private calculateDistance(start: { lat: number; lng: number }, end: { lat: number; lng: number }): number {
@@ -127,8 +125,31 @@ export class TrackingService {
     return this.startedTaskNames.has(taskName);
   }
 
-  getCompletedTaskNames(): string[] {
-    return Array.from(this.completedTaskNames);
+  markTaskAsFailed(taskName: string): void {
+    this.completedTaskNames.delete(taskName);
+    this.startedTaskNames.delete(taskName);
+    this.kartoffelCount$.next(this.kartoffelCount$.value + 1);
   }
 
+  startOverallTimer(): void {
+    if (!this.startTime) {
+      this.startTime = Date.now();
+    }
+  }
+
+  getTotalTime(): number {
+    return this.startTime ? Date.now() - this.startTime : 0;
+  }
+
+  reset(): void {
+    this.watchId = null;
+    this.lastPosition = null;
+    this._distance$.next(0);
+    this.schnitzelCount$.next(0);
+    this.kartoffelCount$.next(0);
+    this.completedTaskNames.clear();
+    this.startedTaskNames.clear();
+    this.tasks = [];
+    this.startTime = null;
+  }
 }

@@ -41,4 +41,14 @@ export const routes: Routes = [
     loadComponent: () =>
         import('./pages/distance/distance.page').then(m => m.DistancePage),
   },
+  {
+    path: 'end',
+    loadComponent: () =>
+        import('./pages/end-leaderboard/end-leaderboard.component').then(m => m.EndLeaderboardComponent),
+  },
+  {
+    path: 'leaderboard',
+    loadComponent: () =>
+        import('././leaderboard/leaderboard').then(m => m.Leaderboard),
+  }
 ];

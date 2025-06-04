@@ -82,6 +82,7 @@ export class PowerPage implements OnInit, OnDestroy {
   skipTask() {
     this.stopBatteryMonitoring();
     this.router.navigate(['distance']);
+    this.trackingService.markTaskAsFailed('Power')
   }
 
   completeTask() {
