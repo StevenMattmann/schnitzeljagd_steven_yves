@@ -1,113 +1,54 @@
 import {Injectable} from '@angular/core';
 import {Preferences} from '@capacitor/preferences';
+import { Geolocation } from '@capacitor/geolocation';
 
-@Injectable({
-  providedIn: 'root',
-})
+
+@Injectable({ providedIn: 'root' })
 export class TrackingService {
-  private startTime: number | null = null;
-  private playerName: string | null = null;
-  private leaderboardData: { name: string; date: string; schnitzel: number; potatoes: number }[] = [];
-  private schnitzelCount = 0;
-  private kartoffelCount = 0;
+  private startPosition: { lat: number, lng: number } | null = null;
+  private watchId: string | null = null;
+  distanceTravelled = 0;
 
-  constructor() {
-    this.loadLeaderboardData();
-  }
 
-  async startSessionForPlayer(name: string, date: string) {
-    this.playerName = name;
-    this.startTime = Date.now();
-    console.log(`Starting session for player: ${name} on ${date}`);
+  async startTracking(onDistanceReached: () => void) {
+    const pos = await Geolocation.getCurrentPosition();
+    this.startPosition = { lat: pos.coords.latitude, lng: pos.coords.longitude };
 
-    const existingPlayer = this.leaderboardData.find((entry) => entry.name === name);
-    if (!existingPlayer) {
-      console.log(`New player added: ${name}`);
-      this.leaderboardData.push({ name, date, schnitzel: 0, potatoes: 0 });
-      await this.saveLeaderboardData();
-    }
-  }
+    this.watchId = await Geolocation.watchPosition(
+      { enableHighAccuracy: true },
+      (pos) => {
+        if (pos && this.startPosition) {
+          const current = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          this.distanceTravelled += this.calculateDistance(this.startPosition, current);
+          this.startPosition = current;
 
-  async addTask(taskName: string, time: number) {
-    const schnitzel = 1;
-    const potatoes = time > 20000 ? 1 : 0;
-
-    this.schnitzelCount += schnitzel;
-    this.kartoffelCount += potatoes;
-
-    console.log(
-      `Task added: ${taskName}, Time: ${time}ms, Schnitzel: ${schnitzel}, Potatoes: ${potatoes}`
+          if (this.distanceTravelled >= 10) {
+            onDistanceReached();
+            this.stopTracking();
+          }
+        }
+      }
     );
+  }
 
-    if (this.playerName) {
-      const playerEntry = this.leaderboardData.find((entry) => entry.name === this.playerName);
-      if (playerEntry) {
-        console.log(`Updating player ${this.playerName}: Before:`, playerEntry);
-        playerEntry.schnitzel += schnitzel;
-        playerEntry.potatoes += potatoes;
-        console.log(`Updating player ${this.playerName}: After:`, playerEntry);
-        await this.saveLeaderboardData();
-      } else {
-        console.error(`Player ${this.playerName} not found in leaderboard`);
-      }
+  stopTracking() {
+    if (this.watchId) {
+      Geolocation.clearWatch({ id: this.watchId });
+      this.watchId = null;
     }
   }
+  calculateDistance(start: { lat: number, lng: number }, end: { lat: number, lng: number }): number {
+    const R = 6371e3; // Erdradius in m
+    const φ1 = start.lat * Math.PI / 180;
+    const φ2 = end.lat * Math.PI / 180;
+    const Δφ = (end.lat - start.lat) * Math.PI / 180;
+    const Δλ = (end.lng - start.lng) * Math.PI / 180;
 
-  getTotalSchnitzel(): number {
-    return this.schnitzelCount;
-  }
+    const a = Math.sin(Δφ / 2) ** 2 +
+      Math.cos(φ1) * Math.cos(φ2) *
+      Math.sin(Δλ / 2) ** 2;
 
-  getTotalKartoffeln(): number {
-    return this.kartoffelCount;
-  }
-
-  getLeaderboardData() {
-    console.log('Leaderboard data retrieved:', this.leaderboardData);
-    return this.leaderboardData;
-  }
-
-  getTotalTime(): number {
-    if (!this.startTime) {
-      return 0;
-    }
-    return Date.now() - this.startTime;
-  }
-
-  reset() {
-    console.log('Resetting player data');
-    this.startTime = null;
-    this.playerName = null;
-    this.schnitzelCount = 0;
-    this.kartoffelCount = 0;
-  }
-
-  // Dafür da, damit
-  public async saveLeaderboardData() {
-    try {
-      console.log('Saving leaderboard data:', this.leaderboardData);
-      await Preferences.set({
-        key: 'leaderboardData',
-        value: JSON.stringify(this.leaderboardData),
-      });
-      console.log('Leaderboard data saved successfully.');
-    } catch (error) {
-      console.error('Error saving leaderboard data:', error);
-    }
-  }
-
-  public async loadLeaderboardData() {
-    try {
-      const { value } = await Preferences.get({ key: 'leaderboardData' });
-      if (value) {
-        this.leaderboardData = JSON.parse(value);
-        console.log('Leaderboard data loaded successfully:', this.leaderboardData);
-      } else {
-        console.log('No saved leaderboard data found. Initializing with empty array.');
-        this.leaderboardData = [];
-      }
-    } catch (error) {
-      console.error('Error loading leaderboard data:', error);
-      this.leaderboardData = [];
-    }
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Ergebnis in Meter
   }
 }
