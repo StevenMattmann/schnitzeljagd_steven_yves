@@ -3,51 +3,42 @@ ion-content {
   flex-direction: column;
   justify-content: space-between;
   padding: 0;
-  background-color: #1e1e1e;
 }
 
 .top-card {
   width: 90%;
   margin: 60px auto 20px auto;
-  background-color: #3a3a3a;
   border-radius: 15px;
   text-align: center;
 }
 
 ion-card-header {
-  background-color: #3a3a3a;
   border-radius: 15px 15px 0 0;
   text-align: center;
   padding: 20px 0;
 }
 
 ion-card-subtitle {
-  color: #ffffff;
   font-size: 20px;
   font-weight: 600;
 }
 
 ion-card-title {
-  color: #ffffff;
   font-size: 32px;
   font-weight: 700;
 }
 
 .task-card {
   width: 90%;
-  background-color: #3a3a3a;
   border-radius: 15px;
   margin: 20px auto;
-  color: #ffffff;
 }
 
 .task-box {
   width: 100%;
-  background-color: #2e2e2e;
   border-radius: 15px;
   padding: 50px 0;
   text-align: center;
-  color: #ffffff;
   font-size: 20px;
   font-weight: 600;
 }
@@ -84,6 +75,7 @@ ion-button {
 }
 
 .next-button {
+  --background: #7f8c8d;
   width: 50%;
   text-transform: capitalize;
   --box-shadow: none;
