@@ -1,15 +1,13 @@
 <ion-tabs>
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="tasks" href="/tasks/tasks">
-      <ion-icon aria-hidden="true" name="triangle"></ion-icon>
-      <ion-label>Tasks</ion-label>
+    <ion-tab-button tab="tasks" (click)="presentGiveUpAlert()">
+      <ion-button color="danger" expand="block">Give-up</ion-button>
     </ion-tab-button>
 
 
 
     <ion-tab-button tab="leaderboard" href="/leaderboard/leaderboard">
-      <ion-icon aria-hidden="true" name="square"></ion-icon>
-      <ion-label>Leaderboard</ion-label>
+      <ion-button class="leaderboardButton">Leaderboard</ion-button>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
