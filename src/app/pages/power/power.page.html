@@ -1,3 +1,44 @@
-<p>
-  power works!
-</p>
+<ion-content fullscreen="true">
+  <ion-card class="top-card">
+    <ion-card-header>
+      <ion-card-subtitle>Aufgabe 3</ion-card-subtitle>
+      <ion-card-title>Ich bin Müde</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card class="task-card">
+    <ion-card-header>
+      <ion-card-title>Stecke dein Smartphone an ein Ladekabel</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="task-box">
+        <div class="task-text">
+          Status:
+          <br />
+          <strong>
+            {{
+              isCharging === null
+                ? 'Ladezustand wird ermittelt...'
+                : isCharging
+                  ? '🔌 Lädt...'
+                  : '❌ Nicht am Laden...'
+            }}
+          </strong>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-footer class="button-container">
+  <ion-button class="cancel-button" (click)="cancelTask()">Abbrechen</ion-button>
+  <ion-button class="skip-button" (click)="skipTask()">Überspr.</ion-button>
+  <ion-button
+    class="next-button"
+    [disabled]="isCharging !== true"
+    (click)="completeTask()"
+  >
+    Weiter
+  </ion-button>
+</ion-footer>
