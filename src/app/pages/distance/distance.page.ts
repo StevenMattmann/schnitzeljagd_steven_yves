@@ -43,30 +43,43 @@ export class DistancePage implements OnInit, OnDestroy {
 
   async startTracking() {
     try {
-      const position = await Geolocation.getCurrentPosition();
+      await Geolocation.requestPermissions(); // Wichtig!
+
+      const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
       this.startPosition = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
+      console.log('Startposition gesetzt:', this.startPosition);
 
-      this.watchId = await Geolocation.watchPosition({}, async (position) => {
-        if (position && this.startPosition) {
-          const currentPos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
+      this.watchId = await Geolocation.watchPosition(
+        { enableHighAccuracy: true, timeout: 10000 },
+        async (position) => {
+          if (position && position.coords && this.startPosition) {
+            const currentPos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
 
-          this.distanceTravelled += this.calculateDistance(this.startPosition, currentPos);
+            const dist = this.calculateDistance(this.startPosition, currentPos);
+            this.distanceTravelled += dist;
 
-          this.startPosition = currentPos;
+            console.log(`Neue Position: ${currentPos.lat}, ${currentPos.lng}`);
+            console.log(`Distanz zu letzter Position: ${dist.toFixed(2)} m`);
+            console.log(`Gesamtdistanz: ${this.distanceTravelled.toFixed(2)} m`);
 
-          if (this.distanceTravelled >= this.requiredDistance && !this.taskCompleted) {
-            this.taskCompleted = true; // Aufgabe als abgeschlossen markieren
-            await Haptics.impact({ style: ImpactStyle.Medium });
-            console.log('Haptisches Feedback ausgelöst: Erforderliche Distanz erreicht');
+            this.startPosition = currentPos;
+
+            if (this.distanceTravelled >= this.requiredDistance && !this.taskCompleted) {
+              this.taskCompleted = true;
+              await Haptics.impact({ style: ImpactStyle.Medium });
+              console.log('Erforderliche Distanz erreicht – haptisches Feedback');
+            }
+          } else {
+            console.warn('Ungültige Position empfangen:', position);
           }
         }
-      });
+      );
     } catch (error) {
       console.error('Fehler beim Starten des Tracking:', error);
     }
