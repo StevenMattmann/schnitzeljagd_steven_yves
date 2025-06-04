@@ -61,7 +61,7 @@ export class DistancePage implements OnInit, OnDestroy {
           this.startPosition = currentPos;
 
           if (this.distanceTravelled >= this.requiredDistance && !this.taskCompleted) {
-            this.taskCompleted = true;
+            this.taskCompleted = true; // Aufgabe als abgeschlossen markieren
             await Haptics.impact({ style: ImpactStyle.Medium });
             console.log('Haptisches Feedback ausgelöst: Erforderliche Distanz erreicht');
           }

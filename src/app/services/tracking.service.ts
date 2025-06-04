@@ -12,7 +12,7 @@ export class TrackingService {
   private kartoffelCount = 0;
 
   constructor() {
-
+    this.loadLeaderboardData();
   }
 
   async startSessionForPlayer(name: string, date: string) {
@@ -20,7 +20,7 @@ export class TrackingService {
     this.startTime = Date.now();
     console.log(`Starting session for player: ${name} on ${date}`);
 
-    const existingPlayer = this.leaderboardData.find(entry => entry.name === name);
+    const existingPlayer = this.leaderboardData.find((entry) => entry.name === name);
     if (!existingPlayer) {
       console.log(`New player added: ${name}`);
       this.leaderboardData.push({ name, date, schnitzel: 0, potatoes: 0 });
@@ -35,10 +35,12 @@ export class TrackingService {
     this.schnitzelCount += schnitzel;
     this.kartoffelCount += potatoes;
 
-    console.log(`Task added : ${taskName}, Time: ${time}ms, Schnitzel: ${schnitzel}, Potatoes: ${potatoes}`);
+    console.log(
+      `Task added: ${taskName}, Time: ${time}ms, Schnitzel: ${schnitzel}, Potatoes: ${potatoes}`
+    );
 
     if (this.playerName) {
-      const playerEntry = this.leaderboardData.find(entry => entry.name === this.playerName);
+      const playerEntry = this.leaderboardData.find((entry) => entry.name === this.playerName);
       if (playerEntry) {
         console.log(`Updating player ${this.playerName}: Before:`, playerEntry);
         playerEntry.schnitzel += schnitzel;
@@ -65,21 +67,21 @@ export class TrackingService {
   }
 
   getTotalTime(): number {
-    if (this.startTime) {
-      return Date.now() - this.startTime;
+    if (!this.startTime) {
+      return 0;
     }
-    return 0;
+    return Date.now() - this.startTime;
   }
 
   reset() {
+    console.log('Resetting player data');
     this.startTime = null;
     this.playerName = null;
-    this.leaderboardData = [];
     this.schnitzelCount = 0;
     this.kartoffelCount = 0;
-    console.log('Tracking service reset');
   }
 
+  // Dafür da, damit
   public async saveLeaderboardData() {
     try {
       console.log('Saving leaderboard data:', this.leaderboardData);
