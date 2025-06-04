@@ -1,70 +1,62 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  IonButton,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonContent,
-  IonFooter
-} from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { TrackingService } from '../../services/tracking.service';
+import { Subscription } from 'rxjs';
+import {IonicModule} from "@ionic/angular";
 
 @Component({
   selector: 'app-distance',
   templateUrl: './distance.page.html',
   styleUrls: ['./distance.page.scss'],
-  standalone: true,
   imports: [
-    CommonModule,
-    IonContent,
-    IonButton,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardSubtitle,
-    IonCardTitle,
-    IonFooter
-  ]
+    IonicModule
+  ],
+  standalone: true
 })
 export class DistancePage implements OnInit, OnDestroy {
   distanceTravelled = 0;
+  requiredDistance = 10;
   taskCompleted = false;
+  private sub!: Subscription;
+  private startTime: number | null = null;
 
   constructor(
-    private router: Router,
-    private trackingService: TrackingService
+    private trackingService: TrackingService,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.trackingService.distanceTravelled = 0;
-    this.trackingService.startTracking(async () => {
-      this.taskCompleted = true;
-      this.distanceTravelled = this.trackingService.distanceTravelled;
+    this.startTime = Date.now(); // ⏱️ Startzeit setzen
+    this.trackingService.startTracking();
 
-      await Haptics.impact({ style: ImpactStyle.Medium });
-      console.log('🎉 Aufgabe abgeschlossen: 10 Meter erreicht');
+    this.sub = this.trackingService.distance$.subscribe(async (distance) => {
+      this.distanceTravelled = distance;
+
+      if (distance >= this.requiredDistance && !this.taskCompleted) {
+        this.taskCompleted = true;
+        await Haptics.impact({ style: ImpactStyle.Medium });
+        console.log('🎉 Ziel erreicht!');
+      }
     });
   }
 
   ngOnDestroy() {
+    this.sub.unsubscribe();
     this.trackingService.stopTracking();
   }
 
   completeTask() {
-    if (this.taskCompleted) {
-      // Navigiere zur nächsten Seite, z. B. „/end“ oder zurück zur Aufgabenliste
+    if (this.taskCompleted && this.startTime) {
+      const duration = Date.now() - this.startTime; // ⏱️ Dauer berechnen
+      this.trackingService.addTask('Distance', duration); // 📝 Speichern
       this.router.navigate(['/end']);
     }
   }
 
   skipTask() {
     this.trackingService.stopTracking();
-    this.router.navigate(['/tabs/tasks']);
+    this.router.navigate(['/end']);
   }
 
   cancelTask() {

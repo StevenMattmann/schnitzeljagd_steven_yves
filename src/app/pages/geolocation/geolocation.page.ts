@@ -5,6 +5,7 @@ import {IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonC
   selector: 'app-geolocation',
   templateUrl: './geolocation.page.html',
   styleUrls: ['./geolocation.page.scss'],
+  standalone: true,
   imports: [
     IonContent,
     IonCard,

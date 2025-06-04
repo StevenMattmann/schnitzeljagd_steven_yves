@@ -1,44 +1,88 @@
-import {Injectable} from '@angular/core';
-import {Preferences} from '@capacitor/preferences';
+import { Injectable } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
+import { BehaviorSubject } from 'rxjs';
 
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class TrackingService {
-  private startPosition: { lat: number, lng: number } | null = null;
   private watchId: string | null = null;
-  distanceTravelled = 0;
+  private lastPosition: { lat: number; lng: number } | null = null;
 
+  private _distance$ = new BehaviorSubject<number>(0);
+  public distance$ = this._distance$.asObservable();
 
-  async startTracking(onDistanceReached: () => void) {
-    const pos = await Geolocation.getCurrentPosition();
-    this.startPosition = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+  private tasks: { name: string; duration: number; timestamp: string }[] = [];
 
-    this.watchId = await Geolocation.watchPosition(
-      { enableHighAccuracy: true },
-      (pos) => {
-        if (pos && this.startPosition) {
-          const current = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          this.distanceTravelled += this.calculateDistance(this.startPosition, current);
-          this.startPosition = current;
+  constructor() {}
 
-          if (this.distanceTravelled >= 10) {
-            onDistanceReached();
-            this.stopTracking();
-          }
+  async startTracking() {
+    try {
+      await Geolocation.requestPermissions();
+
+      const position = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      if (!position?.coords) return;
+
+      this.lastPosition = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+
+      this._distance$.next(0); // Reset
+
+      this.watchId = await Geolocation.watchPosition(
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
+        (position) => {
+          if (!position?.coords || !this.lastPosition) return;
+
+          const currentPos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          const delta = this.calculateDistance(this.lastPosition, currentPos);
+          const total = this._distance$.value + delta;
+
+          this._distance$.next(total); // Live-Wert aktualisieren
+          this.lastPosition = currentPos;
         }
-      }
-    );
+      );
+    } catch (err) {
+      console.error('Tracking-Fehler:', err);
+    }
   }
 
   stopTracking() {
     if (this.watchId) {
       Geolocation.clearWatch({ id: this.watchId });
       this.watchId = null;
+      this.lastPosition = null;
+      this._distance$.next(0);
     }
   }
-  calculateDistance(start: { lat: number, lng: number }, end: { lat: number, lng: number }): number {
-    const R = 6371e3; // Erdradius in m
+
+  addTask(taskName: string, duration: number) {
+    const entry = {
+      name: taskName,
+      duration,
+      timestamp: new Date().toISOString()
+    };
+    this.tasks.push(entry);
+    console.log('📝 Aufgabe gespeichert:', entry);
+
+
+  }
+
+  getCompletedTasks() {
+    return this.tasks;
+  }
+
+  getTotalTaskCount(): number {
+    return this.tasks.length;
+  }
+
+  private calculateDistance(start: { lat: number; lng: number }, end: { lat: number; lng: number }): number {
+    const R = 6371e3;
     const φ1 = start.lat * Math.PI / 180;
     const φ2 = end.lat * Math.PI / 180;
     const Δφ = (end.lat - start.lat) * Math.PI / 180;
@@ -47,8 +91,8 @@ export class TrackingService {
     const a = Math.sin(Δφ / 2) ** 2 +
       Math.cos(φ1) * Math.cos(φ2) *
       Math.sin(Δλ / 2) ** 2;
-
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Ergebnis in Meter
+
+    return R * c; // Meter
   }
 }
