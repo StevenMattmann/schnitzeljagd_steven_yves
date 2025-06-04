@@ -1,0 +1,90 @@
+ion-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  background-color: #1e1e1e;
+}
+
+.top-card {
+  width: 90%;
+  margin: 60px auto 20px auto;
+  background-color: #3a3a3a;
+  border-radius: 15px;
+  text-align: center;
+}
+
+ion-card-header {
+  background-color: #3a3a3a;
+  border-radius: 15px 15px 0 0;
+  text-align: center;
+  padding: 20px 0;
+}
+
+ion-card-subtitle {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+ion-card-title {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.task-card {
+  width: 90%;
+  background-color: #3a3a3a;
+  border-radius: 15px;
+  margin: 20px auto;
+  color: #ffffff;
+}
+
+.task-box {
+  width: 100%;
+  background-color: #2e2e2e;
+  border-radius: 15px;
+  padding: 50px 0;
+  text-align: center;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.task-text {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.button-container {
+  width: 90%;
+  margin: 20px auto;
+  display: flex;
+  height: 55px;
+}
+
+ion-button {
+  box-shadow: none;
+  font-size: 14px;
+}
+
+.cancel-button {
+  --background: #e74c3c;
+  width: 25%;
+  text-transform: capitalize;
+  --box-shadow: none;
+}
+
+.skip-button {
+  --background: #f39c12;
+  width: 25%;
+  text-transform: capitalize;
+  --box-shadow: none;
+}
+
+.next-button {
+  width: 50%;
+  text-transform: capitalize;
+  --box-shadow: none;
+}

@@ -1,3 +1,32 @@
-<p>
-  distance works!
-</p>
+<ion-content fullscreen="true">
+  <ion-card class="top-card">
+    <ion-card-header>
+      <ion-card-subtitle>Aufgabe 4</ion-card-subtitle>
+      <ion-card-title>Distanz</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card class="task-card">
+    <ion-card-header>
+      <ion-card-title>Bewege dich 10 Meter</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <div class="task-box">
+        <div class="task-text">Zurückgelegte Distanz: <br> {{ distanceTravelled.toFixed(2) }} Meter</div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-footer class="button-container">
+  <ion-button class="cancel-button" (click)="cancelTask()">Abbrechen</ion-button>
+  <ion-button class="skip-button" (click)="skipTask()">Überspr.</ion-button>
+  <ion-button
+    class="next-button"
+    [disabled]="distanceTravelled < requiredDistance"
+    (click)="completeTask()"
+  >
+    Weiter
+  </ion-button>
+</ion-footer>
