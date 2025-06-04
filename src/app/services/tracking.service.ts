@@ -8,6 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 export class TrackingService {
   private watchId: string | null = null;
   private lastPosition: { lat: number; lng: number } | null = null;
+  private schnitzelCount$ = new BehaviorSubject<number>(0);
+  private kartoffelCount$ = new BehaviorSubject<number>(0);
 
   private _distance$ = new BehaviorSubject<number>(0);
   public distance$ = this._distance$.asObservable();
@@ -70,7 +72,16 @@ export class TrackingService {
     this.tasks.push(entry);
     console.log('📝 Aufgabe gespeichert:', entry);
 
+    const schnitzel = 1;
+    this.schnitzelCount$.next(this.schnitzelCount$.value + schnitzel);
 
+    if (duration > 20000) {
+      this.kartoffelCount$.next(this.kartoffelCount$.value + 1);
+    }
+
+    console.log(
+      `🏁 Punkte: +${schnitzel} 🥇, +${duration > 20000 ? 1 : 0} 🥔 (Zeit: ${duration} ms)`
+    );
   }
 
   getCompletedTasks() {
@@ -94,5 +105,13 @@ export class TrackingService {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     return R * c; // Meter
+  }
+
+  get schnitzel$() {
+    return this.schnitzelCount$.asObservable();
+  }
+
+  get kartoffeln$() {
+    return this.kartoffelCount$.asObservable();
   }
 }

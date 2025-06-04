@@ -1,10 +1,8 @@
 <ion-tabs>
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="tasks" (click)="presentGiveUpAlert()">
-      <ion-button color="danger" expand="block">Give-up</ion-button>
-    </ion-tab-button>
-
-
+    <ion-button color="danger" expand="block" (click)="presentGiveUpAlert()" class="giveup-button">
+      Give-up
+    </ion-button>
 
     <ion-tab-button tab="leaderboard" href="/leaderboard/leaderboard">
       <ion-button class="leaderboardButton">Leaderboard</ion-button>
