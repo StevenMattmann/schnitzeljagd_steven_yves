@@ -2,22 +2,26 @@
   <ion-card class="top-card">
     <ion-card-header>
       <ion-card-subtitle>Aufgabe 1</ion-card-subtitle>
-      <ion-card-title>Geolocation</ion-card-title>
+      <ion-card-title>Standort-Aufgabe</ion-card-title>
     </ion-card-header>
   </ion-card>
 
   <ion-card class="task-card">
     <ion-card-header>
-      <ion-card-title>Begebe dich zur <br> Migros</ion-card-title>
+      <ion-card-title>Ziel: <br> Migros</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
       <div class="task-box">
         <div class="task-text">
-          <p *ngIf="currentDistance !== null">
-            Du bist<br><strong></strong> Meter<br>entfernt
-          </p>
-          <p *ngIf="currentDistance === null">Position wird ermittelt...</p>
+          <ng-container *ngIf="distanceToTarget !== null; else loadingText">
+            <p>
+              Entfernung:<br><strong>{{ distanceToTarget }}</strong> Meter
+            </p>
+          </ng-container>
+          <ng-template #loadingText>
+            <p>Standort wird bestimmt...</p>
+          </ng-template>
         </div>
       </div>
     </ion-card-content>
@@ -25,11 +29,9 @@
 </ion-content>
 
 <ion-footer class="button-container">
-  <ion-button class="cancel-button">Abbrechen</ion-button>
-  <ion-button class="skip-button">Überspr.</ion-button>
-  <ion-button
-    class="next-button"
-  >
+  <ion-button class="cancel-button" (click)="onCancel()">Abbrechen</ion-button>
+  <ion-button class="skip-button" (click)="onSkip()">Überspringen</ion-button>
+  <ion-button class="next-button" [disabled]="!locationReached" (click)="onFinish()">
     Weiter
   </ion-button>
 </ion-footer>
