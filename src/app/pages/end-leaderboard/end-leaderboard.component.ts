@@ -7,11 +7,9 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonContent,
   IonFooter,
-  IonHeader
 } from "@ionic/angular/standalone";
-import {BehaviorSubject, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {AsyncPipe} from "@angular/common";
 
 @Component({
@@ -20,11 +18,9 @@ import {AsyncPipe} from "@angular/common";
   styleUrls: ['./end-leaderboard.component.scss'],
   standalone: true,
   imports: [
-    IonHeader,
     IonCard,
     IonCardHeader,
     IonCardTitle,
-    IonContent,
     IonCardContent,
     IonFooter,
     IonButton,
@@ -44,13 +40,13 @@ export class EndLeaderboardComponent implements OnInit {
     const seconds = Math.floor((totalMilliseconds % 60000) / 1000);
 
     this.elapsedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
     this.totalSchnitzel = this.trackingService.schnitzel$;
     this.totalKartoffeln = this.trackingService.kartoffeln$;
   }
 
   goToLeaderboard() {
-    this.router.navigate(['/leaderboard']);
-    this.trackingService.reset(); // setzt alles zurück
+    this.router.navigate(['/leaderboard'], { queryParams: { fromEnd: true } });
+    this.trackingService.reset();
   }
 }
+

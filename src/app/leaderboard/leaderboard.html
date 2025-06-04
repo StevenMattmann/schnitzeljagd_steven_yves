@@ -2,7 +2,7 @@
   <ion-toolbar>
 
     <ion-buttons slot="end">
-      <ion-button [routerLink]="'/tabs/tasks'" fill="clear">
+      <ion-button (click)="goBack()" fill="clear">
         <ion-icon name="arrow-back" slot="start"></ion-icon>
         Back
       </ion-button>
@@ -24,7 +24,7 @@
     <ion-item *ngFor="let player of players" class="body-leaderboard-item">
       <ion-label class="body-leaderboard-label">
         <h2>{{ player.name }}</h2>
-        <p>{{ player.date }} – Dauer: {{ player.duration }}</p>
+        <p>{{ player.date }} – Dauer: {{ player.dauer.toFixed(2) }}</p>
       </ion-label>
       <ion-badge class="schnitzel-badge" slot="end">{{ player.schnitzel }} 🥇</ion-badge>
       <ion-badge class="kartoffel-badge" slot="end">{{ player.potatoes }} 🥔</ion-badge>

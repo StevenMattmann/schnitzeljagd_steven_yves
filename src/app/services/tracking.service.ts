@@ -125,12 +125,6 @@ export class TrackingService {
     return this.startedTaskNames.has(taskName);
   }
 
-  markTaskAsFailed(taskName: string): void {
-    this.completedTaskNames.delete(taskName);
-    this.startedTaskNames.delete(taskName);
-    this.kartoffelCount$.next(this.kartoffelCount$.value + 1);
-  }
-
   startOverallTimer(): void {
     if (!this.startTime) {
       this.startTime = Date.now();

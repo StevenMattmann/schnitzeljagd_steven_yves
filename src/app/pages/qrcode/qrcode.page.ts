@@ -59,7 +59,6 @@ export class QRCodePage implements  OnInit {
   skipTask() {
     this.trackingService.markTaskStarted('Qr-Code');
     this.router.navigate(['/power']);
-    this.trackingService.markTaskAsFailed('Qr-Code');
   }
 
   cancelTask() {

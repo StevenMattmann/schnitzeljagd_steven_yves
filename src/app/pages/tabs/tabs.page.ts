@@ -31,7 +31,7 @@ export class TabsPage {
         {
           text: 'Ja, aufgeben',
           handler: () => {
-            this.router.navigateByUrl('/end');
+            this.router.navigateByUrl('/end-Leaderboard');
           },
         },
       ],

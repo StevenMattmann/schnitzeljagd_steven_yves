@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import {RouterModule, ActivatedRoute, Router} from '@angular/router';
+import {addIcons} from "ionicons";
+import {arrowBack} from "ionicons/icons";
 
 interface Player {
   name: string;
@@ -18,15 +20,23 @@ interface Player {
   standalone: true,
   imports: [IonicModule, CommonModule, RouterModule]
 })
-export class Leaderboard implements OnInit {
-  players: { name: string; date: string; schnitzel: number; potatoes: number; duration: string }[] = [];
+export class LeaderboardComponent implements OnInit {
+  players: Player[] = [];
+  cameFromEnd = false;
+
+  constructor(private route: ActivatedRoute, private router: Router) {
+    addIcons({ arrowBack });
+  }
 
   async ngOnInit() {
+    // 👇 Query-Parameter lesen
+    this.route.queryParams.subscribe(params => {
+      this.cameFromEnd = params['fromEnd'] === 'true';
+    });
+
     try {
       const res = await fetch('https://opensheet.elk.sh/1XbcuP7BAY4FUUbcoiTps-NcgHju2O4cqUFYgkGlVqq8/Formularantworten%201');
       const data = await res.json();
-
-      console.log('Google Sheet Daten:', data);
 
       this.players = data
         .map((row: any): Player => ({
@@ -34,7 +44,7 @@ export class Leaderboard implements OnInit {
           date: row.Zeitstempel || 'n/a',
           schnitzel: parseInt(row.Schnitzel || '0', 10),
           potatoes: parseInt(row.Kartoffeln || '0', 10),
-          dauer: parseInt(row.Dauer || "Unbekannt")
+          dauer: parseInt(row.Dauer || '0', 10)
         }))
         .filter((player: Player) => player.name !== 'Unbekannt')
         .sort((a: Player, b: Player) => b.schnitzel - a.schnitzel);
@@ -42,5 +52,12 @@ export class Leaderboard implements OnInit {
       console.error('❌ Fehler beim Laden der Leaderboard-Daten:', err);
     }
   }
-}
 
+  goBack() {
+    if (this.cameFromEnd) {
+      this.router.navigate(['/end-Leaderboard']);
+    } else {
+      this.router.navigate(['/tabs/tasks']);
+    }
+  }
+}

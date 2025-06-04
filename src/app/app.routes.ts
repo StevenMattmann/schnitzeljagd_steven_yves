@@ -42,13 +42,13 @@ export const routes: Routes = [
         import('./pages/distance/distance.page').then(m => m.DistancePage),
   },
   {
-    path: 'end',
+    path: 'end-Leaderboard',
     loadComponent: () =>
         import('./pages/end-leaderboard/end-leaderboard.component').then(m => m.EndLeaderboardComponent),
   },
   {
     path: 'leaderboard',
     loadComponent: () =>
-        import('././leaderboard/leaderboard').then(m => m.Leaderboard),
+        import('././leaderboard/leaderboard').then(m => m.LeaderboardComponent),
   }
 ];
