@@ -4,7 +4,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./pages/login/login.page').then((m) => m.LoginPage),
+      import('./pages/geolocation/geolocation.page').then((m) => m.GeolocationPage),
   },
   {
     path: 'tabs',
@@ -29,7 +29,7 @@ export const routes: Routes = [
   {
     path: 'qrcode',
     loadComponent: () =>
-        import('./pages/qrcode/qrcode.page').then(m => m.QrcodePage),
+        import('./pages/qrcode/qrcode.page').then(m => m.QRCodePage),
   },
   {
     path: 'power',

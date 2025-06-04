@@ -14,19 +14,23 @@
     <ion-card-content>
       <div class="task-box">
         <div class="task-text">Halte die Kamera<br>über den QR Code</div>
+        <!-- 🔍 Video-Stream aus Kamera -->
+        <video #video width="100%" height="200" autoplay muted></video>
+        <p style="margin-top: 10px;">Status: {{ scannerResult }}</p>
       </div>
     </ion-card-content>
   </ion-card>
-  <ion-button (click)="scanBarcode()" class="qrcode-button">Scanne QR Code</ion-button>
+
+  <ion-button expand="block" (click)="startScanner()" class="qrcode-button">Scanner starten</ion-button>
 </ion-content>
 
 <ion-footer class="button-container">
   <ion-button class="cancel-button" (click)="cancelTask()">Abbrechen</ion-button>
   <ion-button class="skip-button" (click)="skipTask()">Überspr.</ion-button>
   <ion-button
-    (click)="completeTask()"
-    [disabled]="scannerResult !== 'M335@ICT-BZ'"
     class="next-button"
+    [disabled]="scannerResult !== 'M335@ICT-BZ'"
+    (click)="completeTask()"
   >
     Weiter
   </ion-button>

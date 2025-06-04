@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { BrowserQRCodeReader } from '@zxing/browser';
 import { Router } from '@angular/router';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { TrackingService } from '../../services/tracking.service';
 import {IonicModule} from "@ionic/angular";
 
@@ -14,59 +13,43 @@ import {IonicModule} from "@ionic/angular";
   ],
   standalone: true
 })
-export class QRCodePage implements OnInit {
-  scannerResult: string = 'No Data...';
-  private startTime: number | null = null;
-  private taskCompleted: boolean = false;
+export class QRCodePage {
+  @ViewChild('video') videoElement!: ElementRef<HTMLVideoElement>;
+  scannerResult = 'Noch nichts erkannt...';
+  private taskCompleted = false;
+  private startTime: number = Date.now();
 
-  constructor(
-    private router: Router,
-    private trackingService: TrackingService
-  ) {}
+  constructor(private router: Router, private trackingService: TrackingService) {}
 
-  ngOnInit() {
-    this.startTask();
-  }
-
-  startTask() {
-    this.startTime = Date.now();
-  }
-
-  async scanBarcode() {
+  async startScanner() {
+    const codeReader = new BrowserQRCodeReader();
     try {
-      await BarcodeScanner.checkPermission({ force: true });
-      await BarcodeScanner.hideBackground();
-      const result = await BarcodeScanner.startScan();
+      const result = await codeReader.decodeOnceFromVideoDevice(undefined, this.videoElement.nativeElement);
+      this.scannerResult = result.getText();
 
-      this.scannerResult = result?.hasContent ? result.content ?? 'No Data...' : 'Kein Inhalt';
       if (this.scannerResult === 'M335@ICT-BZ' && !this.taskCompleted) {
         this.taskCompleted = true;
-        await Haptics.impact({ style: ImpactStyle.Medium });
-        console.log('✔️ Richtiger QR-Code gescannt');
+        alert('✔️ Richtiger QR-Code!');
       }
-    } catch (error) {
-      console.error('QR-Code Scan fehlgeschlagen:', error);
-      this.scannerResult = 'Fehler beim Scan';
-    } finally {
-      await BarcodeScanner.showBackground();
-      await BarcodeScanner.stopScan();
+    } catch (err) {
+      console.error('Scan-Fehler:', err);
+      this.scannerResult = 'Fehler beim Scannen';
+    }
+  }
+
+  completeTask() {
+    if (this.taskCompleted) {
+      const duration = Date.now() - this.startTime;
+      this.trackingService.addTask('QRCode', duration);
+      this.router.navigate(['/power']);
     }
   }
 
   skipTask() {
-    this.router.navigate(['power']);
-  }
-
-  completeTask() {
-    if (this.taskCompleted && this.startTime) {
-      const taskDuration = Date.now() - this.startTime;
-      this.trackingService.addTask('QRCode', taskDuration);
-      this.router.navigate(['power']);
-    }
+    this.router.navigate(['/power']);
   }
 
   cancelTask() {
     this.router.navigate(['/tabs']);
-    this.scannerResult = '';
   }
 }
