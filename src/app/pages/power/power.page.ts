@@ -82,7 +82,7 @@ export class PowerPage implements OnInit, OnDestroy {
 
   skipTask() {
     this.stopBatteryMonitoring();
-    this.router.navigate(['/distance']);
+    this.router.navigate(['distance']);
   }
 
   completeTask() {
@@ -91,7 +91,7 @@ export class PowerPage implements OnInit, OnDestroy {
       this.trackingService.addTask('Power', taskDuration);
 
       this.stopBatteryMonitoring();
-      this.router.navigate(['/distance']);
+      this.router.navigate(['distance']);
     } else {
       alert('⚠️ Bitte schliesse dein Gerät an ein Ladekabel an, um fortzufahren.');
     }
@@ -99,6 +99,6 @@ export class PowerPage implements OnInit, OnDestroy {
 
   cancelTask() {
     this.stopBatteryMonitoring();
-    this.router.navigate(['/leaderboard']);
+    this.router.navigate(['/tabs/tasks']);
   }
 }

@@ -54,19 +54,19 @@ export class QRCodePage implements OnInit {
   }
 
   skipTask() {
-    this.router.navigate(['/power']);
+    this.router.navigate(['power']);
   }
 
   completeTask() {
     if (this.taskCompleted && this.startTime) {
       const taskDuration = Date.now() - this.startTime;
       this.trackingService.addTask('QRCode', taskDuration);
-      this.router.navigate(['/power']);
+      this.router.navigate(['power']);
     }
   }
 
   cancelTask() {
-    this.router.navigate(['/leaderboard']);
+    this.router.navigate(['/tabs']);
     this.scannerResult = '';
   }
 }
