@@ -24,10 +24,10 @@
     <ion-item *ngFor="let player of players" class="body-leaderboard-item">
       <ion-label class="body-leaderboard-label">
         <h2>{{ player.name }}</h2>
-        <p>{{ player.date }}</p>
+        <p>{{ player.date }} – Dauer: {{ player.duration }}</p>
       </ion-label>
-      <ion-badge class="schnitzel-badge" slot="end">{{ player.schnitzel }} Schnitzel</ion-badge>
-      <ion-badge class="kartoffel-badge" slot="end">{{ player.potatoes }} Kartoffeln</ion-badge>
+      <ion-badge class="schnitzel-badge" slot="end">{{ player.schnitzel }} 🥇</ion-badge>
+      <ion-badge class="kartoffel-badge" slot="end">{{ player.potatoes }} 🥔</ion-badge>
     </ion-item>
   </ion-list>
 </ion-content>
