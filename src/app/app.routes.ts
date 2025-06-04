@@ -4,7 +4,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./pages/geolocation/geolocation.page').then((m) => m.GeolocationPage),
+      import('./pages/login/login.page').then((m) => m.LoginPage),
   },
   {
     path: 'tabs',
