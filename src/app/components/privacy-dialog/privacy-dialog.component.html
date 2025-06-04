@@ -1,15 +1,45 @@
-<ion-card>
+<ion-card class="header-permissions-card">
   <ion-card-header>
-    <ion-card-title>Privacy info</ion-card-title>
+    <ion-card-title class="header-permissions-card-header-title">
+      Berechtigungen
+    </ion-card-title>
     <ion-card-subtitle>
-      To start the “Schnitzeljagd” game, we need access to your camera and location.
+      Um das Spiel zu starten, benötigen wir Kamera- und Standortzugriff.
     </ion-card-subtitle>
   </ion-card-header>
 
   <ion-card-content>
-    <ion-button expand="block" (click)="requestPermissions()">Approve</ion-button>
-    <ion-button fill="outline" expand="block" color="medium" (click)="cancelDialog.emit()">
-      Cancel
+    <ion-button
+      expand="block"
+      [color]="cameraGranted ? 'success' : 'medium'"
+      (click)="requestCameraPermission()"
+    >
+      Kamera
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      [color]="geoGranted ? 'success' : 'medium'"
+      (click)="requestGeolocationPermission()"
+    >
+      Standort
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      fill="outline"
+      color="medium"
+      (click)="cancelTask()"
+    >
+      Abbrechen
+    </ion-button>
+
+    <ion-button
+      expand="block"
+      [disabled]="!(geoGranted && cameraGranted)"
+      (click)="completeTask()"
+    >
+      Weiter
     </ion-button>
   </ion-card-content>
 </ion-card>
