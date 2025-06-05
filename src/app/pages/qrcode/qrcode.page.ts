@@ -4,13 +4,15 @@ import {Router} from '@angular/router';
 import {TrackingService} from '../../services/tracking.service';
 import {IonicModule} from "@ionic/angular";
 import {Haptics, ImpactStyle} from "@capacitor/haptics";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-qrcode',
   templateUrl: './qrcode.page.html',
   styleUrls: ['./qrcode.page.scss'],
   imports: [
-    IonicModule
+    IonicModule,
+    NgClass
   ],
   standalone: true
 })

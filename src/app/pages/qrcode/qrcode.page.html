@@ -31,6 +31,10 @@
     class="next-button"
     [disabled]="scannerResult !== 'M335@ICT-BZ'"
     (click)="completeTask()"
+    [ngClass]="{
+      'enabled-style': scannerResult === 'M335@ICT-BZ',
+      'disabled-style': scannerResult !== 'M335@ICT-BZ'
+    }"
   >
     Weiter
   </ion-button>

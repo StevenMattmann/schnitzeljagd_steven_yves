@@ -4,13 +4,15 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { TrackingService } from '../../services/tracking.service';
 import { Subscription } from 'rxjs';
 import {IonicModule} from "@ionic/angular";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-distance',
   templateUrl: './distance.page.html',
   styleUrls: ['./distance.page.scss'],
   imports: [
-    IonicModule
+    IonicModule,
+    NgClass
   ],
   standalone: true
 })

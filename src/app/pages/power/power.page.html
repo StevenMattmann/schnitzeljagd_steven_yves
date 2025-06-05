@@ -38,6 +38,10 @@
     class="next-button"
     [disabled]="isCharging !== true"
     (click)="completeTask()"
+    [ngClass]="{
+      'enabled-style': isCharging === true,
+      'disabled-style': isCharging !== true
+    }"
   >
     Weiter
   </ion-button>

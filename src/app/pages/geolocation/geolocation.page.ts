@@ -13,7 +13,7 @@ import {
   IonButton,
   IonFooter
 } from '@ionic/angular/standalone';
-import { NgIf } from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-geo-task',
@@ -27,7 +27,8 @@ import { NgIf } from '@angular/common';
     IonCardContent,
     IonButton,
     IonFooter,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './geolocation.page.html',
   styleUrls: ['./geolocation.page.scss']

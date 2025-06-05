@@ -74,9 +74,17 @@ ion-button {
   --box-shadow: none;
 }
 
-.next-button {
-  --background: #7f8c8d;
+.next-button.disabled-style {
+  --background: #768283;
   width: 50%;
   text-transform: capitalize;
   --box-shadow: none;
 }
+
+.next-button.enabled-style {
+  --background: limegreen;
+  width: 50%;
+  text-transform: capitalize;
+  --box-shadow: none;
+}
+

@@ -31,7 +31,12 @@
 <ion-footer class="button-container">
   <ion-button class="cancel-button" (click)="onCancel()">Abbrechen</ion-button>
   <ion-button class="skip-button" (click)="onSkip()">Überspringen</ion-button>
-  <ion-button class="next-button" [disabled]="!locationReached" (click)="onFinish()">
+  <ion-button
+    class="next-button"
+    [disabled]="!locationReached"
+    [ngClass]="{ 'enabled-style': locationReached, 'disabled-style': !locationReached }"
+    (click)="onFinish()"
+  >
     Weiter
   </ion-button>
 </ion-footer>

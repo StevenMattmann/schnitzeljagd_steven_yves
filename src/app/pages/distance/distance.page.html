@@ -35,6 +35,10 @@
     class="next-button"
     [disabled]="distanceTravelled < requiredDistance"
     (click)="completeTask()"
+    [ngClass]="{
+      'enabled-style': distanceTravelled >= requiredDistance,
+      'disabled-style': distanceTravelled < requiredDistance
+    }"
   >
     Weiter
   </ion-button>
