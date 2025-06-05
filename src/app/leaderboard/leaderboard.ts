@@ -8,7 +8,7 @@ import {arrowBack} from "ionicons/icons";
 interface Player {
   name: string;
   date: string;
-  medaillen: number;
+  schnitzel: number;
   potatoes: number;
   dauer: number;
 }
@@ -45,12 +45,12 @@ export class LeaderboardComponent implements OnInit {
         .map((row: any): Player => ({
           name: row.Name || 'Unbekannt',
           date: row.Zeitstempel || 'n/a',
-          medaillen: parseInt(row.Schnitzel || '0', 10),
+          schnitzel: parseInt(row.Schnitzel || '0', 10),
           potatoes: parseInt(row.Kartoffeln || '0', 10),
           dauer: parseInt(row.Dauer || '0', 10)
         }))
         .filter((player: Player) => player.name !== 'Unbekannt')
-        .sort((a: Player, b: Player) => b.medaillen - a.potatoes);
+        .sort((a: Player, b: Player) => b.schnitzel - a.potatoes);
     } catch (err) {
       console.error('❌ Fehler beim Laden der Leaderboard-Daten:', err);
     }
