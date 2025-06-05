@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, signal} from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonButton,
@@ -15,6 +15,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { TrackingService } from '../../services/tracking.service';
 import { haversineDistance } from '../../utils/haversine';
+import { NgZone } from '@angular/core';
 
 @Component({
   selector: 'app-distance',
@@ -44,7 +45,8 @@ export class DistancePage implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private trackingService: TrackingService
+    private trackingService: TrackingService,
+    private zone: NgZone
   ) {}
 
   ngOnInit() {
@@ -80,7 +82,11 @@ export class DistancePage implements OnInit, OnDestroy {
 
           const delta = haversineDistance(this.startCoords, newCoords);
           const updated = this.distance() + delta;
-          this.distance.set(updated);
+
+          // ⬇️ UI-Update in Angular-Zone
+          this.zone.run(() => {
+            this.distance.set(updated);
+          });
 
           this.startCoords = newCoords;
 
