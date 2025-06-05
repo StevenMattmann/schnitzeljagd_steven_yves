@@ -46,7 +46,7 @@ export class DistancePage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.sub.unsubscribe();
-    this.trackingService.stopTracking();
+    this.trackingService.resetTracking();
   }
 
   completeTask() {
@@ -61,12 +61,12 @@ export class DistancePage implements OnInit, OnDestroy {
   }
 
   skipTask() {
-    this.trackingService.stopTracking();
+    this.trackingService.resetTracking();
     this.router.navigate(['/end-Leaderboard']);
   }
 
   cancelTask() {
-    this.trackingService.stopTracking();
+    this.trackingService.resetTracking();
     this.router.navigate(['/tabs/tasks']);
   }
 }

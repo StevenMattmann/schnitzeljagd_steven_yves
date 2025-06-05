@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Geolocation } from '@capacitor/geolocation';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { TrackingService } from '../../services/tracking.service';
+import {calculateDistance} from '../../utils/geo';
+
 import {
   IonContent,
   IonCard,
@@ -13,7 +15,7 @@ import {
   IonButton,
   IonFooter
 } from '@ionic/angular/standalone';
-import {NgClass, NgIf} from '@angular/common';
+import {DecimalPipe, NgClass, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-geo-task',
@@ -28,7 +30,8 @@ import {NgClass, NgIf} from '@angular/common';
     IonButton,
     IonFooter,
     NgIf,
-    NgClass
+    NgClass,
+    DecimalPipe
   ],
   templateUrl: './geolocation.page.html',
   styleUrls: ['./geolocation.page.scss']
@@ -42,7 +45,7 @@ export class GeolocationPage implements OnInit, OnDestroy {
   public alreadyDone: boolean = false;
 
   private readonly destination = { lat: 47.027596, lng: 8.300954 };
-  private readonly allowedRadius = 1550000000;
+  private readonly allowedRadius = 30;
 
   constructor(
     private router: Router,
@@ -58,7 +61,6 @@ export class GeolocationPage implements OnInit, OnDestroy {
   private async initLocationWatcher(): Promise<void> {
     try {
       const position = await Geolocation.getCurrentPosition();
-      this.calculateDistance(position.coords.latitude, position.coords.longitude);
 
       this.geoWatcherId = await Geolocation.watchPosition(
         { enableHighAccuracy: true },
@@ -70,38 +72,28 @@ export class GeolocationPage implements OnInit, OnDestroy {
 
           if (data) {
             const { latitude, longitude } = data.coords;
-            this.calculateDistance(latitude, longitude);
+            this.calculateDistance(latitude, longitude); // ✅ HIER
           }
         }
       );
+
     } catch (e) {
       console.error('Geolocation konnte nicht gestartet werden:', e);
     }
   }
 
-  private calculateDistance(lat: number, lng: number): void {
-    const R = 6371e3; // Erdradius in Metern
-    const toRad = (deg: number) => (deg * Math.PI) / 180;
+  private calculateDistance(currentLat: number, currentLng: number): void {
+    const currentPos = { lat: currentLat, lng: currentLng };
+    const distance = calculateDistance(currentPos, this.destination);
 
-    const φ1 = toRad(this.destination.lat);
-    const φ2 = toRad(lat);
-    const Δφ = toRad(lat - this.destination.lat);
-    const Δλ = toRad(lng - this.destination.lng);
+    this.distanceToTarget = distance;
 
-    const a =
-      Math.sin(Δφ / 2) ** 2 +
-      Math.cos(φ1) * Math.cos(φ2) *
-      Math.sin(Δλ / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    const dist = R * c;
-    this.distanceToTarget = Math.round(dist);
-
-    if (dist <= this.allowedRadius && !this.alreadyDone) {
+    if (distance <= this.allowedRadius && !this.locationReached) {
       this.locationReached = true;
       this.completeAutomatically();
     }
   }
+
 
   private async completeAutomatically(): Promise<void> {
     this.alreadyDone = true;

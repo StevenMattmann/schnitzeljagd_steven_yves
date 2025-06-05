@@ -1,28 +1,42 @@
 import { Injectable } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
-import {BehaviorSubject} from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { calculateDistance } from '../utils/geo';
+
+interface TaskEntry {
+  name: string;
+  duration: number;
+  timestamp: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrackingService {
   private watchId: string | null = null;
+  private readonly kartoffelThreshold = 20000;
+
   private lastPosition: { lat: number; lng: number } | null = null;
-  private medaillenCount$ = new BehaviorSubject<number>(0);
-  private kartoffelCount$ = new BehaviorSubject<number>(0);
+
+  private readonly medaillenCount$ = new BehaviorSubject<number>(0);
+  public readonly medaillen$ = this.medaillenCount$.asObservable();
+
+  private readonly kartoffelnCount$ = new BehaviorSubject<number>(0);
+  public readonly kartoffeln$ = this.kartoffelnCount$.asObservable();
+
   private completedTaskNames = new Set<string>();
   private startedTaskNames = new Set<string>();
+
   private startTime: number | null = null;
 
+  private readonly _distance$ = new BehaviorSubject<number>(0);
+  public readonly distance$ = this._distance$.asObservable();
 
-  private _distance$ = new BehaviorSubject<number>(0);
-  public distance$ = this._distance$.asObservable();
-
-  private tasks: { name: string; duration: number; timestamp: string }[] = [];
+  private taskLog: TaskEntry[] = [];
 
   constructor() {}
 
-  async startTracking() {
+  async startTracking(): Promise<void> {
     try {
       await Geolocation.requestPermissions();
 
@@ -34,7 +48,7 @@ export class TrackingService {
         lng: position.coords.longitude
       };
 
-      this._distance$.next(0); // Reset
+      this._distance$.next(0);
 
       this.watchId = await Geolocation.watchPosition(
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
@@ -46,68 +60,39 @@ export class TrackingService {
             lng: position.coords.longitude
           };
 
-          const delta = this.calculateDistance(this.lastPosition, currentPos);
+          const delta = calculateDistance(this.lastPosition, currentPos);
           const total = this._distance$.value + delta;
 
-          this._distance$.next(total); // Live-Wert aktualisieren
+          this._distance$.next(total);
           this.lastPosition = currentPos;
         }
       );
     } catch (err) {
-      console.error('Tracking-Fehler:', err);
+      console.error('📍 Tracking-Fehler:', err);
     }
   }
 
-  stopTracking() {
+  public resetTracking(): void {
     if (this.watchId) {
-      Geolocation.clearWatch({id: this.watchId});
-      this.watchId = null;
-      this.lastPosition = null;
-      this._distance$.next(0);
+      Geolocation.clearWatch({ id: this.watchId });
     }
+    this.watchId = null;
+    this.lastPosition = null;
+    this._distance$.next(0);
   }
 
-  addTask(taskName: string, duration: number) {
-    const entry = {
-      name: taskName,
-      duration,
-      timestamp: new Date().toISOString()
-    };
-    this.tasks.push(entry);
+  addTask(taskName: string, duration: number): void {
+    const timestamp = new Date().toISOString();
+    this.taskLog.push({ name: taskName, duration, timestamp });
 
-    const medaillen = 1;
-    this.medaillenCount$.next(this.medaillenCount$.value + medaillen);
+    this.medaillenCount$.next(this.medaillenCount$.value + 1);
 
-    if (duration > 20000) {
-      this.kartoffelCount$.next(this.kartoffelCount$.value + 1);
+    if (duration > this.kartoffelThreshold) {
+      this.kartoffelnCount$.next(this.kartoffelnCount$.value + 1);
     }
 
-    this.completedTaskNames.add(taskName);
+    this.markTaskCompleted(taskName);
   }
-
-  private calculateDistance(start: { lat: number; lng: number }, end: { lat: number; lng: number }): number {
-    const R = 6371e3;
-    const φ1 = start.lat * Math.PI / 180;
-    const φ2 = end.lat * Math.PI / 180;
-    const Δφ = (end.lat - start.lat) * Math.PI / 180;
-    const Δλ = (end.lng - start.lng) * Math.PI / 180;
-
-    const a = Math.sin(Δφ / 2) ** 2 +
-      Math.cos(φ1) * Math.cos(φ2) *
-      Math.sin(Δλ / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    return R * c; // Meter
-  }
-
-  get medaillen$() {
-    return this.medaillenCount$.asObservable();
-  }
-
-  get kartoffeln$() {
-    return this.kartoffelCount$.asObservable();
-  }
-
 
   isTaskCompleted(taskName: string): boolean {
     return this.completedTaskNames.has(taskName);
@@ -136,14 +121,12 @@ export class TrackingService {
   }
 
   reset(): void {
-    this.watchId = null;
-    this.lastPosition = null;
-    this._distance$.next(0);
+    this.resetTracking();
     this.medaillenCount$.next(0);
-    this.kartoffelCount$.next(0);
+    this.kartoffelnCount$.next(0);
     this.completedTaskNames.clear();
     this.startedTaskNames.clear();
-    this.tasks = [];
+    this.taskLog = [];
     this.startTime = null;
   }
 }
