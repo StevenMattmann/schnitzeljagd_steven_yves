@@ -8,7 +8,7 @@ import {arrowBack} from "ionicons/icons";
 interface Player {
   name: string;
   date: string;
-  medaillen: number;
+  schnitzel: number;
   potatoes: number;
   dauer: number;
 }
@@ -25,29 +25,32 @@ export class LeaderboardComponent implements OnInit {
   cameFromEnd = false;
 
   constructor(private route: ActivatedRoute, private router: Router) {
+    //Pfeil Icon hinzugefügt
     addIcons({ arrowBack });
   }
 
   async ngOnInit() {
-    // 👇 Query-Parameter lesen
+    // Prüfen, ob der View von einer "Endseite" kommt
     this.route.queryParams.subscribe(params => {
       this.cameFromEnd = params['fromEnd'] === 'true';
     });
 
     try {
+      // Daten aus Google Sheet via OpenSheet API laden
       const res = await fetch('https://opensheet.elk.sh/1XbcuP7BAY4FUUbcoiTps-NcgHju2O4cqUFYgkGlVqq8/Formularantworten%201');
       const data = await res.json();
 
+      //Daten werden hier aufbereited
       this.players = data
         .map((row: any): Player => ({
           name: row.Name || 'Unbekannt',
           date: row.Zeitstempel || 'n/a',
-          medaillen: parseInt(row.Schnitzel || '0', 10),
+          schnitzel: parseInt(row.Schnitzel || '0', 10),
           potatoes: parseInt(row.Kartoffeln || '0', 10),
           dauer: parseInt(row.Dauer || '0', 10)
         }))
         .filter((player: Player) => player.name !== 'Unbekannt')
-        .sort((a: Player, b: Player) => b.medaillen - a.medaillen);
+        .sort((a: Player, b: Player) => b.schnitzel - a.potatoes);
     } catch (err) {
       console.error('❌ Fehler beim Laden der Leaderboard-Daten:', err);
     }
