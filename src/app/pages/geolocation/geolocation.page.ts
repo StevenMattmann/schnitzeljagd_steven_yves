@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit, signal} from '@angular/core';
 import { Router } from '@angular/router';
 import { Geolocation } from '@capacitor/geolocation';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { TrackingService } from '../../services/tracking.service';
-import {calculateDistance} from '../../utils/geo';
+
 
 import {
   IonContent,
@@ -16,6 +16,7 @@ import {
   IonFooter
 } from '@ionic/angular/standalone';
 import {DecimalPipe, NgClass, NgIf} from '@angular/common';
+import {haversineDistance} from "../../utils/haversine";
 
 @Component({
   selector: 'app-geo-task',
@@ -41,11 +42,11 @@ export class GeolocationPage implements OnInit, OnDestroy {
   private taskStartedAt: number | null = null;
 
   public locationReached: boolean = false;
-  public distanceToTarget: number | null = null;
+  public readonly distanceToTarget = signal<number | null>(null);
   public alreadyDone: boolean = false;
 
-  private readonly destination = { lat: 47.027596, lng: 8.300954 };
-  private readonly allowedRadius = 30;
+  private readonly destination = { latitude: 47.027596, longitude: 8.300954 };
+  private readonly allowedRadius = 15;
 
   constructor(
     private router: Router,
@@ -60,8 +61,6 @@ export class GeolocationPage implements OnInit, OnDestroy {
 
   private async initLocationWatcher(): Promise<void> {
     try {
-      const position = await Geolocation.getCurrentPosition();
-
       this.geoWatcherId = await Geolocation.watchPosition(
         { enableHighAccuracy: true },
         (data, error) => {
@@ -83,10 +82,10 @@ export class GeolocationPage implements OnInit, OnDestroy {
   }
 
   private calculateDistance(currentLat: number, currentLng: number): void {
-    const currentPos = { lat: currentLat, lng: currentLng };
-    const distance = calculateDistance(currentPos, this.destination);
+    const currentPos = { latitude: currentLat, longitude: currentLng };
+    const distance = haversineDistance(currentPos, this.destination);
 
-    this.distanceToTarget = distance;
+    this.distanceToTarget.set(distance);
 
     if (distance <= this.allowedRadius && !this.locationReached) {
       this.locationReached = true;

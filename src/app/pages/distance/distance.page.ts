@@ -1,62 +1,115 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnInit, OnDestroy, signal} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonContent,
+  IonFooter,
+} from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { Geolocation } from '@capacitor/geolocation';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { TrackingService } from '../../services/tracking.service';
-import { Subscription } from 'rxjs';
-import {IonicModule} from "@ionic/angular";
-import {NgClass} from "@angular/common";
+import { haversineDistance } from '../../utils/haversine';
 
 @Component({
   selector: 'app-distance',
   templateUrl: './distance.page.html',
   styleUrls: ['./distance.page.scss'],
+  standalone: true,
   imports: [
-    IonicModule,
-    NgClass
+    IonContent,
+    CommonModule,
+    IonButton,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardSubtitle,
+    IonCardTitle,
+    IonFooter,
   ],
-  standalone: true
 })
 export class DistancePage implements OnInit, OnDestroy {
-  distanceTravelled = 0;
   requiredDistance = 10;
+  readonly distance = signal(0);
   taskCompleted = false;
-  private sub!: Subscription;
+
+  private startCoords: { latitude: number; longitude: number } | null = null;
+  private watchId: string | null = null;
   private startTime: number | null = null;
 
   constructor(
-    private trackingService: TrackingService,
-    private router: Router
+    private router: Router,
+    private trackingService: TrackingService
   ) {}
 
   ngOnInit() {
-    this.startTime = Date.now(); // ⏱️ Startzeit setzen
-    this.trackingService.startTracking();
-    this.trackingService.markTaskStarted('Distance');
-
-    this.sub = this.trackingService.distance$.subscribe(async (distance) => {
-      this.distanceTravelled = distance;
-
-      if (distance >= this.requiredDistance && !this.taskCompleted) {
-        this.taskCompleted = true;
-        await Haptics.impact({ style: ImpactStyle.Medium });
-        console.log('🎉 Ziel erreicht!');
-      }
-    });
+    this.startTask();
+    this.startTracking();
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
-    this.trackingService.resetTracking();
+    this.stopTracking();
+  }
+
+  startTask() {
+    this.startTime = Date.now();
+  }
+
+  async startTracking() {
+    try {
+      const position = await Geolocation.getCurrentPosition();
+      this.startCoords = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+
+      this.watchId = await Geolocation.watchPosition(
+        { enableHighAccuracy: true, timeout: 1000, maximumAge: 0 },
+        async (position, error) => {
+          if (error || !position || !this.startCoords) return;
+
+          const newCoords = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+
+          const delta = haversineDistance(this.startCoords, newCoords);
+          const updated = this.distance() + delta;
+          this.distance.set(updated);
+
+          this.startCoords = newCoords;
+
+          if (updated >= this.requiredDistance && !this.taskCompleted) {
+            this.taskCompleted = true;
+            await Haptics.impact({ style: ImpactStyle.Medium });
+            this.stopTracking();
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Fehler beim Starten des GPS-Trackings:', error);
+    }
+  }
+
+  stopTracking() {
+    if (this.watchId) {
+      Geolocation.clearWatch({ id: this.watchId });
+      this.watchId = null;
+    }
   }
 
   completeTask() {
     if (this.taskCompleted && this.startTime) {
-      const duration = Date.now() - this.startTime; // ⏱️ Dauer berechnen
-      this.trackingService.addTask('Distance', duration); // 📝 Speichern
-      this.router.navigate(['/end']);
+      const endTime = Date.now();
+      const taskDuration = endTime - this.startTime;
 
-      this.trackingService.markTaskCompleted('Distance');
-    } else {
+      this.trackingService.addTask('Distance', taskDuration);
+      this.router.navigate(['/end-Leaderboard']);
     }
   }
 

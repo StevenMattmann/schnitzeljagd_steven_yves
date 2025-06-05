@@ -8,21 +8,15 @@
 
   <ion-card class="task-card">
     <ion-card-header>
-      <ion-card-title>Bewege dich {{ requiredDistance }} Meter</ion-card-title>
+      <ion-card-title>Bewege dich 10 Meter</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
       <div class="task-box">
         <div class="task-text">
           Zurückgelegte Distanz: <br />
-          <strong>{{ distanceTravelled.toFixed(2) }}</strong> Meter
+          {{ distance() | number:'1.2-2' }} Meter
         </div>
-
-        <ion-progress-bar
-          [value]="distanceTravelled / requiredDistance"
-          buffer="1.0"
-          color="success"
-        ></ion-progress-bar>
       </div>
     </ion-card-content>
   </ion-card>
@@ -33,11 +27,11 @@
   <ion-button class="skip-button" (click)="skipTask()">Überspr.</ion-button>
   <ion-button
     class="next-button"
-    [disabled]="distanceTravelled < requiredDistance"
+    [disabled]="!taskCompleted"
     (click)="completeTask()"
     [ngClass]="{
-      'enabled-style': distanceTravelled >= requiredDistance,
-      'disabled-style': distanceTravelled < requiredDistance
+      'enabled-style': taskCompleted,
+      'disabled-style': !taskCompleted
     }"
   >
     Weiter

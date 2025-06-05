@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { BehaviorSubject } from 'rxjs';
-import { calculateDistance } from '../utils/geo';
+import {haversineDistance} from "../utils/haversine";
 
 interface TaskEntry {
   name: string;
@@ -16,7 +16,7 @@ export class TrackingService {
   private watchId: string | null = null;
   private readonly kartoffelThreshold = 20000;
 
-  private lastPosition: { lat: number; lng: number } | null = null;
+  private lastPosition: { latitude: number; longitude: number } | null = null;
 
   private readonly medaillenCount$ = new BehaviorSubject<number>(0);
   public readonly medaillen$ = this.medaillenCount$.asObservable();
@@ -29,8 +29,7 @@ export class TrackingService {
 
   private startTime: number | null = null;
 
-  private readonly _distance$ = new BehaviorSubject<number>(0);
-  public readonly distance$ = this._distance$.asObservable();
+  public readonly distance = signal(0);
 
   private taskLog: TaskEntry[] = [];
 
@@ -44,11 +43,11 @@ export class TrackingService {
       if (!position?.coords) return;
 
       this.lastPosition = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
       };
 
-      this._distance$.next(0);
+      this.distance.set(0);
 
       this.watchId = await Geolocation.watchPosition(
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
@@ -56,14 +55,14 @@ export class TrackingService {
           if (!position?.coords || !this.lastPosition) return;
 
           const currentPos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
           };
 
-          const delta = calculateDistance(this.lastPosition, currentPos);
-          const total = this._distance$.value + delta;
+          const delta = haversineDistance(this.lastPosition, currentPos);
+          const total = this.distance() + delta;
+          this.distance.set(total);
 
-          this._distance$.next(total);
           this.lastPosition = currentPos;
         }
       );
@@ -78,7 +77,7 @@ export class TrackingService {
     }
     this.watchId = null;
     this.lastPosition = null;
-    this._distance$.next(0);
+    this.distance.set(0);
   }
 
   addTask(taskName: string, duration: number): void {

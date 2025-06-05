@@ -15,9 +15,9 @@
       <div class="task-box">
         <div class="task-text">
           <ng-container *ngIf="distanceToTarget !== null; else loadingText">
-            <ion-card-subtitle>
-              Noch {{ distanceToTarget | number:'1.0-1' }} Meter bis zum Ziel
-            </ion-card-subtitle>
+            <ng-container *ngIf="distanceToTarget() as distance">
+              Noch {{ distance | number: '1.0-1' }} Meter bis zum Ziel.
+            </ng-container>
           </ng-container>
           <ng-template #loadingText>
             <p>Standort wird bestimmt...</p>
