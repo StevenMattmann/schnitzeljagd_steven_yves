@@ -12,7 +12,7 @@ import { TrackingService } from '../../services/tracking.service';
   imports: [IonicModule, CommonModule, RouterModule]
 })
 export class TasksPage implements OnInit, ViewWillEnter {
-  schnitzel$ = this.trackingService.schnitzel$;
+  medaillen$ = this.trackingService.medaillen$;
   kartoffeln$ = this.trackingService.kartoffeln$;
 
   tasks = [

@@ -8,7 +8,7 @@ import {BehaviorSubject} from 'rxjs';
 export class TrackingService {
   private watchId: string | null = null;
   private lastPosition: { lat: number; lng: number } | null = null;
-  private schnitzelCount$ = new BehaviorSubject<number>(0);
+  private medaillenCount$ = new BehaviorSubject<number>(0);
   private kartoffelCount$ = new BehaviorSubject<number>(0);
   private completedTaskNames = new Set<string>();
   private startedTaskNames = new Set<string>();
@@ -75,8 +75,8 @@ export class TrackingService {
     };
     this.tasks.push(entry);
 
-    const schnitzel = 1;
-    this.schnitzelCount$.next(this.schnitzelCount$.value + schnitzel);
+    const medaillen = 1;
+    this.medaillenCount$.next(this.medaillenCount$.value + medaillen);
 
     if (duration > 20000) {
       this.kartoffelCount$.next(this.kartoffelCount$.value + 1);
@@ -100,8 +100,8 @@ export class TrackingService {
     return R * c; // Meter
   }
 
-  get schnitzel$() {
-    return this.schnitzelCount$.asObservable();
+  get medaillen$() {
+    return this.medaillenCount$.asObservable();
   }
 
   get kartoffeln$() {
@@ -139,7 +139,7 @@ export class TrackingService {
     this.watchId = null;
     this.lastPosition = null;
     this._distance$.next(0);
-    this.schnitzelCount$.next(0);
+    this.medaillenCount$.next(0);
     this.kartoffelCount$.next(0);
     this.completedTaskNames.clear();
     this.startedTaskNames.clear();

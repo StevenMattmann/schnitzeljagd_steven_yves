@@ -29,7 +29,7 @@ import {AsyncPipe} from "@angular/common";
 })
 export class EndLeaderboardComponent implements OnInit {
   elapsedTime: string = '';
-  totalSchnitzel!: Observable<number>;
+  totalMedaillen!: Observable<number>;
   totalKartoffeln!: Observable<number>;
 
   constructor(private router: Router, private trackingService: TrackingService) {}
@@ -40,7 +40,7 @@ export class EndLeaderboardComponent implements OnInit {
     const seconds = Math.floor((totalMilliseconds % 60000) / 1000);
 
     this.elapsedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    this.totalSchnitzel = this.trackingService.schnitzel$;
+    this.totalMedaillen = this.trackingService.medaillen$;
     this.totalKartoffeln = this.trackingService.kartoffeln$;
   }
 
