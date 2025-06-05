@@ -43,8 +43,9 @@ export class PrivacyDialogComponent implements OnInit {
 
   async requestCameraPermission() {
     try {
-      const cameraResult = await Camera.requestPermissions();
-      this.cameraGranted = cameraResult.camera === 'granted';
+      await Camera.requestPermissions({ permissions: ['camera'] });
+      const status = await Camera.checkPermissions();
+      this.cameraGranted = status.camera === 'granted';
       console.log('Camera permission status:', this.cameraGranted);
     } catch (error) {
       console.error('Error requesting camera permission:', error);
